@@ -1,0 +1,64 @@
+Create a fully functional Online Book Library using React.js.
+The application will allow users to view, add, update, and delete books.
+It will also allow users to register, log in, and manage their personal library collection.
+Use Firebase for the database, Redux for state management, React Router for navigation, and Axios for making API calls.
+
+Pages and Screens
+Screen 1: Home Page (/)
+
+Display a list of all books available in the library.
+
+Fetch the books from Firestore using axios or Firebase SDK, and display them in a clean layout.
+
+Show basic information like the title, author, genre, and a short description for each book.
+
+Include a search bar to filter books by title or author.
+
+Implement React Router to link to other pages like the "Add Book" and "My Library" pages.
+	Pagination or Infinite Scroll:
+		Implement pagination or infinite scrolling for the list of books on the home page.
+
+Screen 2: Book Details Page (/book/:id)
+
+When a user clicks on a book from the home page, display a detailed view of the book (full description, publication year, etc.).
+
+Allow the user to edit the book information if they are logged in.
+	Book Reviews and Ratings:
+		Allow users to leave reviews and ratings for books.
+
+Screen 3: Add New Book Page (/add-book)
+
+Users can add a new book to the library.
+
+Create a form with fields like title, author, genre, and description.
+
+Use useState for managing form data.
+
+When the form is submitted, send the new book data to Firestore.
+
+Screen 4: User Registration (/register)
+
+Allow users to create an account using Firebase Authentication.
+
+Collect the user’s email and password, and use Firebase’s createUserWithEmailAndPassword method for registration.
+
+Screen 5: User Login (/login)
+
+Allow users to log in with their email and password.
+
+Use Firebase’s signInWithEmailAndPassword method for authentication.
+
+If the user is logged in, they will have access to the "My Library" page and can add/edit books.
+
+Screen 6: My Library Page (/my-library)
+
+Display a list of books that belong to the logged-in user (from Firestore).
+
+Allow users to remove or update the books from their personal collection.
+
+Screen 7: Not Found Page (/404)
+
+Create a page that displays a "404 Not Found" message for any invalid routes.
+
+Screen 8: User Profile:
+Create a screen that allows the user to edit or delete its account!
