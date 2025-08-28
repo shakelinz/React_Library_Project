@@ -32,6 +32,8 @@ export const LoginPage = () => {
         const userData = snapshot.docs[0].data();
         if (userData.password === formData.password) {
           alert("Login successful!");
+
+          localStorage.setItem("currentUser", JSON.stringify(userData));
           window.location.href = "/myLibrary"; // Redirect to My Library page
         } else {
           alert("Invalid password.");

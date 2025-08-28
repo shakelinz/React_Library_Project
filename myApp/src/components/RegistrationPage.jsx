@@ -21,17 +21,25 @@ export const RegistrationPage = () => {
     setFormData({ ...formData, [name]: value })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault()
     const usersCollection = collection(db, "users");
-    addDoc(usersCollection, formData)
-      .then(() => {
-        alert("User registered successfully!");
-        window.location.href = "/login"; // Redirect to login page
-      })
-      .catch((error) => {
-        console.error("Error registering user:", error);
-      });
+    // check if there is such email or username
+    const existingUsers = await getDocs(usersCollection);
+    const userExists = existingUsers.docs.some(doc => doc.data().email === formData.email || doc.data().username === formData.username);
+
+    if (userExists) {
+      alert("User with this email or username already exists.");
+      return;
+    }
+
+    try {
+      await addDoc(usersCollection, formData);
+      alert("User registered successfully!");
+      window.location.href = "/login"; // Redirect to login page
+    } catch (error) {
+      console.error("Error registering user:", error);
+    }
   }
 
   return (
