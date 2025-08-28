@@ -1,39 +1,68 @@
-import React, {useState, useEffect} from 'react'
-import {db} from '../config/fireBaseConfig'
-import {addDoc, collection ,getDocs, deleteDoc, doc, updateDoc} from 'firebase/firestore'
-import { Card } from 'react-bootstrap';
+import { useState, useEffect } from "react";
+import { Routes, Route, Link } from "react-router-dom";
+import { db } from "../config/fireBaseConfig";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  deleteDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
+import { Card} from "react-bootstrap";
 
 export const HomePage = () => {
   const [books, setBooks] = useState([]);
   const fetchBooks = async () => {
-      const booksCollection = collection(db, "books");
-      const bookSnapshot = await getDocs(booksCollection);
-      const bookList = bookSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setBooks(bookList);
-    };
+    const booksCollection = collection(db, "books");
+    const bookSnapshot = await getDocs(booksCollection);
+    const bookList = bookSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setBooks(bookList);
+  };
   useEffect(() => {
     fetchBooks();
   }, []);
   return (
     <div>
-        <h1>Welcome to the Home Page</h1>
-        {/* TODO add a search bar */}
-        {/* TODO add a add book button */}
-        {/* TODO add list of all books available in the library */}
-        {/* display them in a grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px' }}>
-          {books.length == 0  ? <li>No books available</li> : 
-          books.map(book => (
-            <li key={book.id}>
-              <Card style={{ width: '18rem' }}>
-                <h2>{book.title}</h2>
-                <p>by {book.author}</p>
-                <p>genres: {book.genres.join(", ")}</p>
+      <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
+        Welcome to the Library
+      </h1>
+      {/* TODO add a search bar */}
+      <input type="text" placeholder="Search books..." />
+      <br />
+      {/* TODO add list of all books available in the library */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+          gap: "16px",
+        }}
+      >
+        {books.length == 0 ? (
+          <div>No books available</div>
+        ) : (
+          books.map((book) => (
+            <Link to={`/book/${book.id}`} key={book.id}>
+              <Card
+                style={{
+                  width: "80%",
+                  border: "1px solid #ccc",
+                  borderRadius: "8px",
+                  padding: "16px",
+                }}
+              >
+                <h2>Name: {book.title}</h2>
+                <p>By: {book.author}</p>
+                <p>Genres: {book.genres.join(", ")}</p>
                 <p>{book.description}</p>
               </Card>
-            </li>
-          ))}
-        </div>
+            </Link>
+          ))
+        )}
+      </div>
     </div>
-  )
-}
+  );
+};

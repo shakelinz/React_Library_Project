@@ -14,13 +14,19 @@ function App() {
 
   return (
     <>
-
-      
+      <nav>
+        <ul style={{display: 'flex', gap: '10px', listStyleType: 'none'}}>
+          <li style={{fontWeight: 'bold', border: '2px solid white'}}><Link to="/">Home</Link></li>
+          <li style={{fontWeight: 'bold', border: '2px solid white'}}><Link to="/addBook">Add New Book</Link></li>
+          <li style={{fontWeight: 'bold', border: '2px solid white'}}><Link to="/register">Register</Link></li>
+          <li style={{fontWeight: 'bold', border: '2px solid white'}}><Link to="/login">Login</Link></li>
+        </ul>
+      </nav>
 
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/addBook" element={<AddNewBookPage />} />
-        <Route path="/bookDetails/:id" element={<BookDetailsPage />} />
+        <Route path="/book/:id" element={<BookDetailsPage />} />
         <Route path='/register' element={<RegistrationPage />} />
         <Route path='/login' element={<LoginPage />} />
         <Route path='/myLibrary' element={<MyLibraryPage />} />

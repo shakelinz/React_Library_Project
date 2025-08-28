@@ -9,7 +9,8 @@ export const AddNewBookPage = () => {
     genre1: '',
     genre2: '',
     genre3: '',
-    description: ''
+    description: '',
+    publicationDate: '',
   })
 
   const handleChange = (e) => {
@@ -23,9 +24,20 @@ export const AddNewBookPage = () => {
       title: formData.title,
       author: formData.author,
       genres: [formData.genre1, formData.genre2, formData.genre3],
-      description: formData.description
+      description: formData.description,
+      publicationDate: formData.publicationDate,
+      borrowedBy: ''
     });
     alert("Book added successfully!")
+    setFormData({
+      title: '',
+      author: '',
+      genre1: '',
+      genre2: '',
+      genre3: '',
+      description: '',
+      publicationDate: ''
+    });
   }
 
   return (
@@ -34,13 +46,14 @@ export const AddNewBookPage = () => {
       {/* TODO add a form to add a new book */}
       {/* style it well */}
 
-      <form>
+      <form className='Form' style={{ display: 'flex', flexDirection: 'column', maxWidth: '400px', margin: '0 auto' }}>
         <input type="text" name='title' placeholder="Book Title" onChange={handleChange} />
         <input type="text" name='author' placeholder="Author" onChange={handleChange} />
         {/* give the option to add up to 3 genres */}
-        <input type="text" name='genre1' placeholder="Genre" onChange={handleChange} />
-        <input type="text" name='genre2' placeholder="Genre" onChange={handleChange} />
-        <input type="text" name='genre3' placeholder="Genre" onChange={handleChange} />
+        <input type="text" name='genre1' placeholder="Genre1" onChange={handleChange} />
+        <input type="text" name='genre2' placeholder="Genre2" onChange={handleChange} />
+        <input type="text" name='genre3' placeholder="Genre3" onChange={handleChange} />
+        <input type="text" name='publicationDate' placeholder="Publication Date" onChange={handleChange} />
         <textarea name='description' placeholder="Description" onChange={handleChange}></textarea>
         <button type="submit" onClick={handleSubmit}>Add Book</button>
       </form>
