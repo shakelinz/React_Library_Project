@@ -1,16 +1,34 @@
 import { useState } from "react";
 import { db } from "../config/fireBaseConfig";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import {
-  addDoc,
-  collection,
-  getDocs,
-  deleteDoc,
-  getDoc,
-  doc,
-  updateDoc,
-} from "firebase/firestore";
-import { query, where } from "firebase/firestore";
-import { Form, FormText } from "react-bootstrap";
+  TextField,
+  Button,
+  Typography,
+  Box,
+  Stack,
+  ThemeProvider,
+  createTheme,
+  IconButton,
+  InputAdornment,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+    primary: {
+      main: "#90caf9",
+    },
+    background: {
+      default: "#121212",
+    },
+    text: {
+      primary: "#ffffff",
+      secondary: "#b0b0b0",
+    },
+  },
+});
 
 export const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -18,60 +36,100 @@ export const LoginPage = () => {
     password: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const usersRef = collection(db, "users");
     const q = query(usersRef, where("email", "==", formData.email));
-    getDocs(q).then((snapshot) => {
-      if (!snapshot.empty) {
-        const userData = snapshot.docs[0].data();
-        if (userData.password === formData.password) {
-          alert("Login successful!");
+    const snapshot = await getDocs(q);
 
-          localStorage.setItem("currentUser", JSON.stringify(userData));
-          window.location.href = "/myLibrary"; // Redirect to My Library page
-        } else {
-          alert("Invalid password.");
-        }
+    if (!snapshot.empty) {
+      const userData = snapshot.docs[0].data();
+      if (userData.password === formData.password) {
+        alert("Login successful!");
+        localStorage.setItem("currentUser", JSON.stringify(userData));
+        window.location.href = "/myLibrary"; // redirect
       } else {
-        alert("User not found.");
+        alert("Invalid password.");
       }
-    });
+    } else {
+      alert("User not found.");
+    }
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="formEmail">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
-        </Form.Group>
+    <ThemeProvider theme={darkTheme}>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+        bgcolor="background.default"
+        p={2}
+      >
+        <Box sx={{ width: "100%", maxWidth: 400 }}>
+          <Typography
+            variant="h5"
+            align="center"
+            gutterBottom
+            sx={{ fontWeight: "bold", color: "text.primary" }}
+          >
+            Login
+          </Typography>
 
-        <Form.Group controlId="formPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-          />
-        </Form.Group>
+          <form onSubmit={handleSubmit}>
+            <Stack spacing={2}>
+              <TextField
+                type="email"
+                name="email"
+                label="Email"
+                variant="outlined"
+                fullWidth
+                value={formData.email}
+                onChange={handleChange}
+              />
 
-        <button type="submit">Login</button>
-      </Form>
-    </div>
+              <TextField
+                type={showPassword ? "text" : "password"}
+                name="password"
+                label="Password"
+                variant="outlined"
+                fullWidth
+                value={formData.password}
+                onChange={handleChange}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                sx={{ py: 1.2, borderRadius: 2 }}
+              >
+                Login
+              </Button>
+            </Stack>
+          </form>
+        </Box>
+      </Box>
+    </ThemeProvider>
   );
 };

@@ -1,13 +1,31 @@
 import React, { useState } from "react";
 import { db } from "../config/fireBaseConfig";
+import { addDoc, collection } from "firebase/firestore";
 import {
-  addDoc,
-  collection,
-  getDocs,
-  deleteDoc,
-  doc,
-  updateDoc,
-} from "firebase/firestore";
+  TextField,
+  Button,
+  Typography,
+  Box,
+  Stack,
+  ThemeProvider,
+  createTheme,
+} from "@mui/material";
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+    primary: {
+      main: "#90caf9",
+    },
+    background: {
+      default: "#121212",
+    },
+    text: {
+      primary: "#ffffff",
+      secondary: "#b0b0b0",
+    },
+  },
+});
 
 export const AddNewBookPage = () => {
   const [formData, setFormData] = useState({
@@ -19,24 +37,25 @@ export const AddNewBookPage = () => {
     description: "",
     publicationDate: "",
   });
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
     try {
-      
       await addDoc(collection(db, "books"), {
         title: formData.title,
         author: formData.author,
-        genres: [formData.genre1, formData.genre2, formData.genre3],
+        genres: [formData.genre1, formData.genre2, formData.genre3].filter(
+          (g) => g.trim() !== ""
+        ),
         description: formData.description,
         publicationDate: formData.publicationDate,
-        createdBy: currentUser.email,
+        createdBy: currentUser?.email,
       });
       alert("Book added successfully!");
       setFormData({
@@ -56,66 +75,110 @@ export const AddNewBookPage = () => {
   };
 
   return (
-    <div>
-      <h2>Add New Book</h2>
-      {/* TODO add a form to add a new book */}
-      {/* style it well */}
-
-      <form
-        className="Form"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          maxWidth: "400px",
-          margin: "0 auto",
-        }}
+    <ThemeProvider theme={darkTheme}>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="flex-start"
+        minHeight="100vh"
+        bgcolor="background.default"
+        p={3}
       >
-        <input
-          type="text"
-          name="title"
-          placeholder="Book Title"
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="author"
-          placeholder="Author"
-          onChange={handleChange}
-        />
-        {/* give the option to add up to 3 genres */}
-        <input
-          type="text"
-          name="genre1"
-          placeholder="Genre1"
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="genre2"
-          placeholder="Genre2"
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="genre3"
-          placeholder="Genre3"
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="publicationDate"
-          placeholder="Publication Date"
-          onChange={handleChange}
-        />
-        <textarea
-          name="description"
-          placeholder="Description"
-          onChange={handleChange}
-        ></textarea>
-        <button type="submit" onClick={handleSubmit}>
-          Add Book
-        </button>
-      </form>
-    </div>
+        <Box sx={{ width: "100%", maxWidth: 500 }}>
+          <Typography
+            variant="h5"
+            align="center"
+            gutterBottom
+            sx={{ fontWeight: "bold", color: "text.primary" }}
+          >
+            Add New Book
+          </Typography>
+
+          <form onSubmit={handleSubmit}>
+            <Stack spacing={2}>
+              <TextField
+                type="text"
+                name="title"
+                label="Book Title"
+                variant="outlined"
+                fullWidth
+                value={formData.title}
+                onChange={handleChange}
+              />
+              <TextField
+                type="text"
+                name="author"
+                label="Author"
+                variant="outlined"
+                fullWidth
+                value={formData.author}
+                onChange={handleChange}
+              />
+
+              {/* Up to 3 genres */}
+              <TextField
+                type="text"
+                name="genre1"
+                label="Genre 1"
+                variant="outlined"
+                fullWidth
+                value={formData.genre1}
+                onChange={handleChange}
+              />
+              <TextField
+                type="text"
+                name="genre2"
+                label="Genre 2"
+                variant="outlined"
+                fullWidth
+                value={formData.genre2}
+                onChange={handleChange}
+              />
+              <TextField
+                type="text"
+                name="genre3"
+                label="Genre 3"
+                variant="outlined"
+                fullWidth
+                value={formData.genre3}
+                onChange={handleChange}
+              />
+
+              <TextField
+                type="date"
+                name="publicationDate"
+                label="Publication Date"
+                variant="outlined"
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+                value={formData.publicationDate}
+                onChange={handleChange}
+              />
+
+              <TextField
+                multiline
+                rows={4}
+                name="description"
+                label="Description"
+                variant="outlined"
+                fullWidth
+                value={formData.description}
+                onChange={handleChange}
+              />
+
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                sx={{ py: 1.2, borderRadius: 2 }}
+              >
+                Add Book
+              </Button>
+            </Stack>
+          </form>
+        </Box>
+      </Box>
+    </ThemeProvider>
   );
 };

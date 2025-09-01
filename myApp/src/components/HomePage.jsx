@@ -9,7 +9,7 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
-import { Card} from "react-bootstrap";
+import { Card } from "react-bootstrap";
 
 export const HomePage = () => {
   const [books, setBooks] = useState([]);
@@ -22,6 +22,19 @@ export const HomePage = () => {
     }));
     setBooks(bookList);
   };
+  const handleSearch = (event) => {
+    const query = event.target.value.toLowerCase();
+    if (query === "") {
+      fetchBooks();
+      return;
+    }
+    const filteredBooks = books.filter(
+      (book) =>
+        book.title.toLowerCase().includes(query) ||
+        book.author.toLowerCase().includes(query)
+    );
+    setBooks(filteredBooks);
+  };
   useEffect(() => {
     fetchBooks();
   }, []);
@@ -31,9 +44,12 @@ export const HomePage = () => {
         Welcome to the Library
       </h1>
       {/* TODO add a search bar */}
-      <input type="text" placeholder="Search books..." />
+      <input
+        type="text"
+        placeholder="Search books..."
+        onChange={handleSearch}
+      />
       <br />
-      {/* TODO add list of all books available in the library */}
       <div
         style={{
           display: "grid",

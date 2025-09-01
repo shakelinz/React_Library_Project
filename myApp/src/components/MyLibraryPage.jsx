@@ -69,6 +69,7 @@ export const MyLibraryPage = () => {
                 onChange={(e) => setBook({ ...book, title: e.target.value })}
                 fullWidth
                 margin="dense"
+                
               />
               <TextField
                 label="Author"
